@@ -1,6 +1,7 @@
 import type { EncryptOptions } from './types';
 import { DEFAULT_ALPHABET } from './utils/alphabets';
 import { shiftChar, validateAlphabet, validateShift } from './utils/helpers';
+import { mapDiacritic } from './utils/diacritics';
 
 /**
  * Encrypts text using the Caesar cipher algorithm
@@ -29,11 +30,15 @@ import { shiftChar, validateAlphabet, validateShift } from './utils/helpers';
  * @throws {Error} If shift is not a valid integer
  */
 export function encrypt(text: string, shift: number, options: EncryptOptions = {}): string {
-  // Extract options with defaults
+  // Extract options with defaults (with backward compatibility)
   const {
     alphabet = DEFAULT_ALPHABET,
-    preserveCase = true,
-    preserveNonAlpha = true,
+    preserveCase,
+    caseStrategy = preserveCase === false ? 'lower' : 'maintain',
+    preserveNonAlpha,
+    preserveSpaces = preserveNonAlpha ?? true,
+    preserveSpecialChars = preserveNonAlpha ?? true,
+    diacriticsLanguage,
   } = options;
 
   // Validate inputs
@@ -48,19 +53,51 @@ export function encrypt(text: string, shift: number, options: EncryptOptions = {
   // Build result string
   let result = '';
 
-  for (const char of text) {
+  for (let char of text) {
+    // Map diacritics if language specified
+    if (diacriticsLanguage) {
+      char = mapDiacritic(char, diacriticsLanguage);
+    }
+
+    // Handle spaces
+    if (char === ' ') {
+      if (preserveSpaces) {
+        result += char;
+      }
+      continue;
+    }
+
+    // Handle line breaks and other whitespace
+    if (char === '\n' || char === '\r' || char === '\t') {
+      if (preserveSpaces) {
+        result += char;
+      }
+      continue;
+    }
+
     const lowerChar = char.toLowerCase();
     const charInAlphabet = alphabet.includes(lowerChar);
 
     if (!charInAlphabet) {
       // Character not in alphabet
-      if (preserveNonAlpha) {
+      if (preserveSpecialChars) {
         result += char;
       }
       // else skip the character
     } else {
+      // Determine if we should preserve case for this character
+      const shouldPreserveCase = caseStrategy === 'maintain';
+
       // Shift the character
-      const shiftedChar = shiftChar(char, shift, alphabet, preserveCase);
+      let shiftedChar = shiftChar(char, shift, alphabet, shouldPreserveCase);
+
+      // Apply case strategy
+      if (caseStrategy === 'upper') {
+        shiftedChar = shiftedChar.toUpperCase();
+      } else if (caseStrategy === 'lower') {
+        shiftedChar = shiftedChar.toLowerCase();
+      }
+
       result += shiftedChar;
     }
   }

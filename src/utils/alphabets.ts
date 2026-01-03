@@ -23,6 +23,38 @@ export const ALPHABET_POLISH_LOWER = 'aąbcćdeęfghijklłmnńoópqrsśtuvwxyzź
 export const ALPHABET_POLISH_UPPER = 'AĄBCĆDEĘFGHIJKLŁMNŃOÓPQRSŚTUVWXYZŹŻ';
 
 /**
+ * German alphabet with lowercase letters including special characters (ä, ö, ü, ß)
+ */
+export const ALPHABET_GERMAN_LOWER = 'aäbcdefghijklmnoöpqrstuüvwxyzß';
+
+/**
+ * German alphabet with uppercase letters including special characters (Ä, Ö, Ü, ß)
+ */
+export const ALPHABET_GERMAN_UPPER = 'AÄBCDEFGHIJKLMNOÖPQRSTUÜVWXYZß';
+
+/**
+ * Spanish alphabet with lowercase letters including special character (ñ)
+ */
+export const ALPHABET_SPANISH_LOWER = 'abcdefghijklmnñopqrstuvwxyz';
+
+/**
+ * Spanish alphabet with uppercase letters including special character (Ñ)
+ */
+export const ALPHABET_SPANISH_UPPER = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ';
+
+/**
+ * French alphabet with lowercase letters (standard Latin alphabet)
+ * Note: French diacritics (é, è, ê, à, etc.) should be mapped to base letters
+ */
+export const ALPHABET_FRENCH_LOWER = 'abcdefghijklmnopqrstuvwxyz';
+
+/**
+ * French alphabet with uppercase letters (standard Latin alphabet)
+ * Note: French diacritics (É, È, Ê, À, etc.) should be mapped to base letters
+ */
+export const ALPHABET_FRENCH_UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+/**
  * Alphanumeric alphabet (lowercase letters + digits)
  */
 export const ALPHABET_ALPHANUMERIC_LOWER = 'abcdefghijklmnopqrstuvwxyz0123456789';

@@ -107,6 +107,7 @@ export function validateShift(shift: number): void {
  * This is a basic heuristic - more sophisticated analysis could be implemented
  * @param text - Text to score
  * @returns Score (higher is better)
+ * @deprecated Use scoreEnglishText from './scoring' for more accurate results
  */
 export function scoreEnglishText(text: string): number {
   // Common English letters (in order of frequency: etaoin shrdlu)

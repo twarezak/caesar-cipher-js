@@ -1,4 +1,9 @@
 /**
+ * Case handling strategy
+ */
+export type CaseStrategy = 'maintain' | 'upper' | 'lower';
+
+/**
  * Options for encryption operations
  */
 export interface EncryptOptions {
@@ -11,14 +16,43 @@ export interface EncryptOptions {
   /**
    * Whether to preserve the case of letters during encryption.
    * @default true
+   * @deprecated Use caseStrategy instead
    */
   preserveCase?: boolean;
 
   /**
+   * Strategy for handling letter case
+   * - 'maintain': Preserve original case (default)
+   * - 'upper': Convert all output to uppercase
+   * - 'lower': Convert all output to lowercase
+   * @default 'maintain'
+   */
+  caseStrategy?: CaseStrategy;
+
+  /**
    * Whether to preserve characters that are not in the alphabet.
    * @default true
+   * @deprecated Use preserveSpaces and preserveSpecialChars instead for finer control
    */
   preserveNonAlpha?: boolean;
+
+  /**
+   * Whether to preserve spaces in the output
+   * @default true
+   */
+  preserveSpaces?: boolean;
+
+  /**
+   * Whether to preserve special characters (non-alphabetic, non-space)
+   * @default true
+   */
+  preserveSpecialChars?: boolean;
+
+  /**
+   * Language for diacritics mapping (e.g., 'french')
+   * If provided, characters with diacritics will be mapped to base letters
+   */
+  diacriticsLanguage?: string;
 }
 
 /**
@@ -34,14 +68,43 @@ export interface DecryptOptions {
   /**
    * Whether to preserve the case of letters during decryption.
    * @default true
+   * @deprecated Use caseStrategy instead
    */
   preserveCase?: boolean;
 
   /**
+   * Strategy for handling letter case
+   * - 'maintain': Preserve original case (default)
+   * - 'upper': Convert all output to uppercase
+   * - 'lower': Convert all output to lowercase
+   * @default 'maintain'
+   */
+  caseStrategy?: CaseStrategy;
+
+  /**
    * Whether to preserve characters that are not in the alphabet.
    * @default true
+   * @deprecated Use preserveSpaces and preserveSpecialChars instead for finer control
    */
   preserveNonAlpha?: boolean;
+
+  /**
+   * Whether to preserve spaces in the output
+   * @default true
+   */
+  preserveSpaces?: boolean;
+
+  /**
+   * Whether to preserve special characters (non-alphabetic, non-space)
+   * @default true
+   */
+  preserveSpecialChars?: boolean;
+
+  /**
+   * Language for diacritics mapping (e.g., 'french')
+   * If provided, characters with diacritics will be mapped to base letters
+   */
+  diacriticsLanguage?: string;
 }
 
 /**
@@ -107,12 +170,41 @@ export interface CipherOptions {
   /**
    * Whether to preserve the case of letters.
    * @default true
+   * @deprecated Use caseStrategy instead
    */
   preserveCase?: boolean;
 
   /**
+   * Strategy for handling letter case
+   * - 'maintain': Preserve original case (default)
+   * - 'upper': Convert all output to uppercase
+   * - 'lower': Convert all output to lowercase
+   * @default 'maintain'
+   */
+  caseStrategy?: CaseStrategy;
+
+  /**
    * Whether to preserve characters that are not in the alphabet.
    * @default true
+   * @deprecated Use preserveSpaces and preserveSpecialChars instead for finer control
    */
   preserveNonAlpha?: boolean;
+
+  /**
+   * Whether to preserve spaces in the output
+   * @default true
+   */
+  preserveSpaces?: boolean;
+
+  /**
+   * Whether to preserve special characters (non-alphabetic, non-space)
+   * @default true
+   */
+  preserveSpecialChars?: boolean;
+
+  /**
+   * Language for diacritics mapping (e.g., 'french')
+   * If provided, characters with diacritics will be mapped to base letters
+   */
+  diacriticsLanguage?: string;
 }

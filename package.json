@@ -1,6 +1,6 @@
 {
   "name": "caesar-cipher-js",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Lightweight JavaScript/TypeScript library for Caesar cipher encryption, decryption and bruteforce attacks",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -38,7 +38,15 @@
     "cryptography",
     "bruteforce",
     "rot13",
-    "shift-cipher"
+    "shift-cipher",
+    "multilingual",
+    "polish",
+    "german",
+    "spanish",
+    "french",
+    "diacritics",
+    "i18n",
+    "typescript"
   ],
   "author": "Tomasz Warezak",
   "license": "MIT",

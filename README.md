@@ -5,11 +5,17 @@
 
 Lightweight JavaScript/TypeScript library for Caesar cipher encryption, decryption, and bruteforce attacks. Zero dependencies, works in Node.js and browsers.
 
+**🌐 Used in production:** This library powers [caesar-cipher.com](https://caesar-cipher.com/) - an interactive online tool for Caesar cipher encryption and decryption with multi-language support.
+
 ## Features
 
 - ✅ **Encrypt and decrypt** text using Caesar cipher
 - ✅ **Bruteforce decryption** when shift key is unknown
-- ✅ **Custom alphabets** support (Polish, alphanumeric, or your own)
+- ✅ **Multi-language support** - English, Polish, German, Spanish, French
+- ✅ **Custom alphabets** support (Polish, German, Spanish, French, alphanumeric, or your own)
+- ✅ **Diacritics mapping** - automatic handling of accented characters (é, è, ê, etc.)
+- ✅ **Language-specific scoring** - intelligent decryption for 5 languages
+- ✅ **Advanced case handling** - maintain, uppercase, or lowercase strategies
 - ✅ **TypeScript support** with full type definitions
 - ✅ **Dual API** - functional and object-oriented
 - ✅ **Zero dependencies** - lightweight and fast
@@ -59,8 +65,12 @@ Encrypts text using the Caesar cipher algorithm.
 - `shift` (number) - The number of positions to shift (can be negative)
 - `options` (object, optional)
   - `alphabet` (string) - Custom alphabet (default: 'a-z')
-  - `preserveCase` (boolean) - Preserve letter case (default: true)
-  - `preserveNonAlpha` (boolean) - Keep non-alphabetic characters (default: true)
+  - `caseStrategy` ('maintain' | 'upper' | 'lower') - Case handling strategy (default: 'maintain')
+  - `preserveSpaces` (boolean) - Keep spaces (default: true)
+  - `preserveSpecialChars` (boolean) - Keep special characters (default: true)
+  - `diacriticsLanguage` (string) - Language for diacritics mapping (e.g., 'french')
+  - `preserveCase` (boolean) - _Deprecated: use caseStrategy_
+  - `preserveNonAlpha` (boolean) - _Deprecated: use preserveSpaces and preserveSpecialChars_
 
 **Returns:** Encrypted string
 
@@ -217,8 +227,14 @@ encrypt('hello', 2, {
 **Available predefined alphabets:**
 - `ALPHABET_ENGLISH_LOWER` - a-z
 - `ALPHABET_ENGLISH_UPPER` - A-Z
-- `ALPHABET_POLISH_LOWER` - Polish lowercase with special characters
-- `ALPHABET_POLISH_UPPER` - Polish uppercase with special characters
+- `ALPHABET_POLISH_LOWER` - Polish lowercase (aąbcćdeęfghijklłmnńoópqrsśtuvwxyzźż)
+- `ALPHABET_POLISH_UPPER` - Polish uppercase (AĄBCĆDEĘFGHIJKLŁMNŃOÓPQRSŚTUVWXYZŹŻ)
+- `ALPHABET_GERMAN_LOWER` - German lowercase (aäbcdefghijklmnoöpqrstuüvwxyzß)
+- `ALPHABET_GERMAN_UPPER` - German uppercase (AÄBCDEFGHIJKLMNOÖPQRSTUÜVWXYZß)
+- `ALPHABET_SPANISH_LOWER` - Spanish lowercase (abcdefghijklmnñopqrstuvwxyz)
+- `ALPHABET_SPANISH_UPPER` - Spanish uppercase (ABCDEFGHIJKLMNÑOPQRSTUVWXYZ)
+- `ALPHABET_FRENCH_LOWER` - French lowercase (a-z, use with diacritics mapping)
+- `ALPHABET_FRENCH_UPPER` - French uppercase (A-Z, use with diacritics mapping)
 - `ALPHABET_ALPHANUMERIC_LOWER` - a-z + 0-9
 - `ALPHABET_ALPHANUMERIC_UPPER` - A-Z + 0-9
 
@@ -252,6 +268,118 @@ const results = bruteforce('encrypted text', {
 console.log(results[0].text); // Most likely decryption
 ```
 
+### Multi-Language Support
+
+The library includes built-in support for 5 languages with language-specific frequency data and scoring functions:
+
+```typescript
+import {
+  bruteforce,
+  scoreEnglishText,
+  scorePolishText,
+  scoreGermanText,
+  scoreSpanishText,
+  scoreFrenchText,
+  getScoreFunction
+} from 'caesar-cipher-js';
+
+// English text
+const englishCipher = 'Khoor Zruog';
+const englishResults = bruteforce(englishCipher, {
+  scoreFunction: scoreEnglishText,
+  maxResults: 1
+});
+console.log(englishResults[0].text); // 'Hello World'
+
+// Polish text
+const polishCipher = 'Fćnuć';
+const polishResults = bruteforce(polishCipher, {
+  scoreFunction: scorePolishText,
+  alphabet: 'AĄBCĆDEĘFGHIJKLŁMNŃOÓPQRSŚTUVWXYZŹŻ'
+});
+
+// Or use getScoreFunction for dynamic language selection
+const language = 'french';
+const scoreFunc = getScoreFunction(language);
+const results = bruteforce(ciphertext, { scoreFunction: scoreFunc });
+```
+
+**Available scoring functions:**
+- `scoreEnglishText(text)` - English language scoring
+- `scorePolishText(text)` - Polish language scoring
+- `scoreGermanText(text)` - German language scoring
+- `scoreSpanishText(text)` - Spanish language scoring
+- `scoreFrenchText(text)` - French language scoring
+- `getScoreFunction(language)` - Get scoring function by language name
+
+### Diacritics Mapping (French)
+
+French text with accented characters can be automatically mapped to base letters:
+
+```typescript
+import { encrypt, ALPHABET_FRENCH_UPPER } from 'caesar-cipher-js';
+
+// French text with diacritics
+const frenchText = 'Café, thé et crème brûlée';
+
+const encrypted = encrypt(frenchText, 5, {
+  alphabet: ALPHABET_FRENCH_UPPER,
+  diacriticsLanguage: 'french'
+});
+// Diacritics (é, è, ê, etc.) are mapped to base letters (e) before encryption
+
+console.log(encrypted); // 'Hfkj, ymd jy hwjrj gwzqjj'
+```
+
+**Supported diacritics mapping:**
+- French: é→e, è→e, ê→e, à→a, ç→c, etc.
+
+### Advanced Case Handling
+
+Control how letter case is handled during encryption/decryption:
+
+```typescript
+import { encrypt } from 'caesar-cipher-js';
+
+const text = 'Hello World';
+
+// Maintain original case (default)
+encrypt(text, 3, { caseStrategy: 'maintain' });
+// 'Khoor Zruog'
+
+// Convert all to uppercase
+encrypt(text, 3, { caseStrategy: 'upper' });
+// 'KHOOR ZRUOG'
+
+// Convert all to lowercase
+encrypt(text, 3, { caseStrategy: 'lower' });
+// 'khoor zruog'
+```
+
+### Fine-Grained Character Control
+
+Separately control spaces and special characters:
+
+```typescript
+import { encrypt } from 'caesar-cipher-js';
+
+const text = 'Hello, World! 123';
+
+// Keep spaces, remove special characters
+encrypt(text, 3, {
+  preserveSpaces: true,
+  preserveSpecialChars: false
+});
+// 'Khoor Zruog 123'
+
+// Remove spaces, keep special characters
+encrypt(text, 3, {
+  preserveSpaces: false,
+  preserveSpecialChars: true
+});
+// 'Khoor,Zruog!123'
+```
+
 ### ROT13 Encoding
 
 ROT13 is a special case of Caesar cipher with shift 13:
@@ -280,18 +408,25 @@ import type {
   BruteforceOptions,
   BruteforceResult,
   CipherOptions,
-  ScoreFunction
+  ScoreFunction,
+  CaseStrategy,
+  SupportedLanguage,
+  LanguageFrequencyData
 } from 'caesar-cipher-js';
 
 const options: EncryptOptions = {
   alphabet: 'abc',
-  preserveCase: true,
-  preserveNonAlpha: false
+  caseStrategy: 'maintain',
+  preserveSpaces: true,
+  preserveSpecialChars: false,
+  diacriticsLanguage: 'french'
 };
 
 const scoreFunc: ScoreFunction = (text: string): number => {
   return text.length;
 };
+
+const language: SupportedLanguage = 'polish';
 ```
 
 ## Browser Usage
@@ -325,7 +460,10 @@ The library is optimized for performance:
 - Encrypting 1MB of text: ~50ms
 - Bruteforce attack (26 attempts): ~10ms
 - Zero dependencies for minimal bundle size
-- Minified size: < 5KB
+- Bundle size:
+  - Raw: ~13.5 KB
+  - Minified: ~8 KB
+  - Minified + gzipped: **~3 KB** ⚡
 
 ## Examples
 
@@ -420,11 +558,10 @@ For real security, use modern encryption like AES-256, RSA, or libsodium.
 
 ## Links
 
+- [🌐 Live Demo - caesar-cipher.com](https://caesar-cipher.com/) - Interactive online tool powered by this library
 - [GitHub Repository](https://github.com/twarezak/caesar-cipher-js)
 - [NPM Package](https://www.npmjs.com/package/caesar-cipher-js)
 - [Issue Tracker](https://github.com/twarezak/caesar-cipher-js/issues)
 - [Changelog](https://github.com/twarezak/caesar-cipher-js/releases)
 
 ---
-
-Made with ❤️ by [Tomasz Warezak](https://github.com/twarezak)

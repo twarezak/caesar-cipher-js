@@ -1,4 +1,4 @@
-import type { CipherOptions, BruteforceResult } from './types';
+import type { CipherOptions, BruteforceResult, CaseStrategy } from './types';
 import { encrypt } from './encrypt';
 import { decrypt } from './decrypt';
 import { bruteforce } from './bruteforce';
@@ -33,6 +33,10 @@ export class CaesarCipher {
   private alphabet: string;
   private preserveCase: boolean;
   private preserveNonAlpha: boolean;
+  private caseStrategy: CaseStrategy;
+  private preserveSpaces: boolean;
+  private preserveSpecialChars: boolean;
+  private diacriticsLanguage?: string;
 
   /**
    * Creates a new CaesarCipher instance
@@ -45,6 +49,10 @@ export class CaesarCipher {
       alphabet = DEFAULT_ALPHABET,
       preserveCase = true,
       preserveNonAlpha = true,
+      caseStrategy = preserveCase === false ? 'lower' : 'maintain',
+      preserveSpaces = preserveNonAlpha,
+      preserveSpecialChars = preserveNonAlpha,
+      diacriticsLanguage,
     } = options;
 
     // Validate alphabet
@@ -53,6 +61,10 @@ export class CaesarCipher {
     this.alphabet = alphabet;
     this.preserveCase = preserveCase;
     this.preserveNonAlpha = preserveNonAlpha;
+    this.caseStrategy = caseStrategy;
+    this.preserveSpaces = preserveSpaces;
+    this.preserveSpecialChars = preserveSpecialChars;
+    this.diacriticsLanguage = diacriticsLanguage;
   }
 
   /**
@@ -73,8 +85,10 @@ export class CaesarCipher {
   encrypt(text: string, shift: number): string {
     return encrypt(text, shift, {
       alphabet: this.alphabet,
-      preserveCase: this.preserveCase,
-      preserveNonAlpha: this.preserveNonAlpha,
+      caseStrategy: this.caseStrategy,
+      preserveSpaces: this.preserveSpaces,
+      preserveSpecialChars: this.preserveSpecialChars,
+      diacriticsLanguage: this.diacriticsLanguage,
     });
   }
 
@@ -96,8 +110,10 @@ export class CaesarCipher {
   decrypt(text: string, shift: number): string {
     return decrypt(text, shift, {
       alphabet: this.alphabet,
-      preserveCase: this.preserveCase,
-      preserveNonAlpha: this.preserveNonAlpha,
+      caseStrategy: this.caseStrategy,
+      preserveSpaces: this.preserveSpaces,
+      preserveSpecialChars: this.preserveSpecialChars,
+      diacriticsLanguage: this.diacriticsLanguage,
     });
   }
 
@@ -153,15 +169,18 @@ export class CaesarCipher {
    * Sets whether to preserve letter case during encryption/decryption
    *
    * @param preserve - true to preserve case, false otherwise
+   * @deprecated Use setCaseStrategy instead
    */
   setPreserveCase(preserve: boolean): void {
     this.preserveCase = preserve;
+    this.caseStrategy = preserve ? 'maintain' : 'lower';
   }
 
   /**
    * Gets the current preserveCase setting
    *
    * @returns true if case is preserved, false otherwise
+   * @deprecated Use getCaseStrategy instead
    */
   getPreserveCase(): boolean {
     return this.preserveCase;
@@ -171,18 +190,95 @@ export class CaesarCipher {
    * Sets whether to preserve non-alphabetic characters during encryption/decryption
    *
    * @param preserve - true to preserve non-alphabetic characters, false otherwise
+   * @deprecated Use setPreserveSpaces and setPreserveSpecialChars instead
    */
   setPreserveNonAlpha(preserve: boolean): void {
     this.preserveNonAlpha = preserve;
+    this.preserveSpaces = preserve;
+    this.preserveSpecialChars = preserve;
   }
 
   /**
    * Gets the current preserveNonAlpha setting
    *
    * @returns true if non-alphabetic characters are preserved, false otherwise
+   * @deprecated Use getPreserveSpaces and getPreserveSpecialChars instead
    */
   getPreserveNonAlpha(): boolean {
     return this.preserveNonAlpha;
+  }
+
+  /**
+   * Sets the case handling strategy
+   *
+   * @param strategy - The case strategy to use ('maintain', 'upper', or 'lower')
+   */
+  setCaseStrategy(strategy: CaseStrategy): void {
+    this.caseStrategy = strategy;
+    this.preserveCase = strategy === 'maintain';
+  }
+
+  /**
+   * Gets the current case strategy
+   *
+   * @returns The current case strategy
+   */
+  getCaseStrategy(): CaseStrategy {
+    return this.caseStrategy;
+  }
+
+  /**
+   * Sets whether to preserve spaces
+   *
+   * @param preserve - true to preserve spaces, false otherwise
+   */
+  setPreserveSpaces(preserve: boolean): void {
+    this.preserveSpaces = preserve;
+  }
+
+  /**
+   * Gets the current preserveSpaces setting
+   *
+   * @returns true if spaces are preserved, false otherwise
+   */
+  getPreserveSpaces(): boolean {
+    return this.preserveSpaces;
+  }
+
+  /**
+   * Sets whether to preserve special characters
+   *
+   * @param preserve - true to preserve special characters, false otherwise
+   */
+  setPreserveSpecialChars(preserve: boolean): void {
+    this.preserveSpecialChars = preserve;
+  }
+
+  /**
+   * Gets the current preserveSpecialChars setting
+   *
+   * @returns true if special characters are preserved, false otherwise
+   */
+  getPreserveSpecialChars(): boolean {
+    return this.preserveSpecialChars;
+  }
+
+  /**
+   * Sets the language for diacritics mapping
+   *
+   * @param language - Language identifier (e.g., 'french') or undefined to disable
+   */
+  setDiacriticsLanguage(language: string | undefined): void {
+    this.diacriticsLanguage = language;
+  }
+
+  /**
+   * Gets the current diacritics language setting
+   *
+   * @returns The language identifier or undefined
+   */
+  getDiacriticsLanguage(): string | undefined {
+    return this.diacriticsLanguage;
   }
 
   /**
@@ -192,5 +288,9 @@ export class CaesarCipher {
     this.alphabet = DEFAULT_ALPHABET;
     this.preserveCase = true;
     this.preserveNonAlpha = true;
+    this.caseStrategy = 'maintain';
+    this.preserveSpaces = true;
+    this.preserveSpecialChars = true;
+    this.diacriticsLanguage = undefined;
   }
 }
