@@ -1,0 +1,69 @@
+{
+  "name": "caesar-cipher-js",
+  "version": "1.0.0",
+  "description": "Lightweight JavaScript/TypeScript library for Caesar cipher encryption, decryption and bruteforce attacks",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vitest",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "build": "rollup -c",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run test && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/twarezak/caesar-cipher-js.git"
+  },
+  "keywords": [
+    "caesar",
+    "cipher",
+    "encryption",
+    "decryption",
+    "cryptography",
+    "bruteforce",
+    "rot13",
+    "shift-cipher"
+  ],
+  "author": "Tomasz Warezak",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/twarezak/caesar-cipher-js/issues"
+  },
+  "homepage": "https://github.com/twarezak/caesar-cipher-js#readme",
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@types/node": "^25.0.3",
+    "@typescript-eslint/eslint-plugin": "^8.51.0",
+    "@typescript-eslint/parser": "^8.51.0",
+    "@vitest/coverage-v8": "^4.0.16",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.7.4",
+    "rollup": "^4.54.0",
+    "rollup-plugin-dts": "^6.3.0",
+    "tslib": "^2.8.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
