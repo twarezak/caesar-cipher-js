@@ -1,6 +1,6 @@
 {
   "name": "caesar-cipher-js",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Lightweight JavaScript/TypeScript library for Caesar cipher encryption, decryption and bruteforce attacks",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
@@ -53,7 +53,7 @@
   "bugs": {
     "url": "https://github.com/twarezak/caesar-cipher-js/issues"
   },
-  "homepage": "https://github.com/twarezak/caesar-cipher-js#readme",
+  "homepage": "https://caesar-cipher.com/caesar-cipher-js-library",
   "devDependencies": {
     "@eslint/js": "^9.39.2",
     "@rollup/plugin-node-resolve": "^16.0.3",
