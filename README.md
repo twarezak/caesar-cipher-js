@@ -64,7 +64,7 @@ Encrypts text using the Caesar cipher algorithm.
 - `text` (string) - The plaintext to encrypt
 - `shift` (number) - The number of positions to shift (can be negative)
 - `options` (object, optional)
-  - `alphabet` (string) - Custom alphabet (default: 'a-z')
+  - `alphabet` (string) - Custom alphabet (default: 'a-z'). Automatically normalized to lowercase.
   - `caseStrategy` ('maintain' | 'upper' | 'lower') - Case handling strategy (default: 'maintain')
   - `preserveSpaces` (boolean) - Keep spaces (default: true)
   - `preserveSpecialChars` (boolean) - Keep special characters (default: true)
@@ -237,6 +237,8 @@ encrypt('hello', 2, {
 - `ALPHABET_FRENCH_UPPER` - French uppercase (A-Z, use with diacritics mapping)
 - `ALPHABET_ALPHANUMERIC_LOWER` - a-z + 0-9
 - `ALPHABET_ALPHANUMERIC_UPPER` - A-Z + 0-9
+
+**Note:** All alphabets are automatically normalized to lowercase internally for consistent processing. You can use uppercase alphabets (e.g., `ALPHABET_ENGLISH_UPPER`) and they will work correctly - case handling is controlled by the `caseStrategy` option.
 
 ### Bruteforce with Custom Scoring
 
@@ -457,8 +459,6 @@ Or with ES modules:
 
 The library is optimized for performance:
 
-- Encrypting 1MB of text: ~50ms
-- Bruteforce attack (26 attempts): ~10ms
 - Zero dependencies for minimal bundle size
 - Bundle size:
   - Raw: ~13.5 KB

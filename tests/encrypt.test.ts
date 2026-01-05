@@ -3,6 +3,9 @@ import { encrypt } from '../src/encrypt';
 import {
   ALPHABET_POLISH_LOWER,
   ALPHABET_ALPHANUMERIC_LOWER,
+  ALPHABET_ENGLISH_UPPER,
+  ALPHABET_POLISH_UPPER,
+  ALPHABET_ALPHANUMERIC_UPPER,
 } from '../src/utils/alphabets';
 
 describe('encrypt', () => {
@@ -99,6 +102,39 @@ describe('encrypt', () => {
       const result = encrypt('abcXYZ', 1, { alphabet: 'abc' });
       // X, Y, Z are not in the alphabet 'abc', so they are preserved
       expect(result).toBe('bcaXYZ');
+    });
+  });
+
+  describe('uppercase alphabets (automatic normalization)', () => {
+    it('should work with ALPHABET_ENGLISH_UPPER', () => {
+      const result = encrypt('Hello World', 3, { alphabet: ALPHABET_ENGLISH_UPPER });
+      expect(result).toBe('Khoor Zruog');
+    });
+
+    it('should work with ALPHABET_POLISH_UPPER', () => {
+      const text = 'ĄĆĘ';
+      const encrypted = encrypt(text, 1, { alphabet: ALPHABET_POLISH_UPPER });
+      // Ą (pos 1) -> B (pos 2), Ć (pos 4) -> D (pos 5), Ę (pos 7) -> F (pos 8)
+      expect(encrypted).toBe('BDF');
+    });
+
+    it('should work with ALPHABET_ALPHANUMERIC_UPPER', () => {
+      const text = 'ABC123';
+      const encrypted = encrypt(text, 3, { alphabet: ALPHABET_ALPHANUMERIC_UPPER });
+      expect(encrypted).toBe('DEF456');
+    });
+
+    it('should preserve case with uppercase alphabets', () => {
+      const result = encrypt('Hello WORLD', 5, {
+        alphabet: ALPHABET_ENGLISH_UPPER,
+        caseStrategy: 'maintain'
+      });
+      expect(result).toBe('Mjqqt BTWQI');
+    });
+
+    it('should handle mixed case text with uppercase alphabet', () => {
+      const result = encrypt('AbC', 1, { alphabet: ALPHABET_ENGLISH_UPPER });
+      expect(result).toBe('BcD');
     });
   });
 

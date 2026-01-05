@@ -41,8 +41,11 @@ export function encrypt(text: string, shift: number, options: EncryptOptions = {
     diacriticsLanguage,
   } = options;
 
+  // Normalize alphabet to lowercase for consistent processing
+  const normalizedAlphabet = alphabet.toLowerCase();
+
   // Validate inputs
-  validateAlphabet(alphabet);
+  validateAlphabet(normalizedAlphabet);
   validateShift(shift);
 
   // Empty text case
@@ -76,7 +79,7 @@ export function encrypt(text: string, shift: number, options: EncryptOptions = {
     }
 
     const lowerChar = char.toLowerCase();
-    const charInAlphabet = alphabet.includes(lowerChar);
+    const charInAlphabet = normalizedAlphabet.includes(lowerChar);
 
     if (!charInAlphabet) {
       // Character not in alphabet
@@ -89,7 +92,7 @@ export function encrypt(text: string, shift: number, options: EncryptOptions = {
       const shouldPreserveCase = caseStrategy === 'maintain';
 
       // Shift the character
-      let shiftedChar = shiftChar(char, shift, alphabet, shouldPreserveCase);
+      let shiftedChar = shiftChar(char, shift, normalizedAlphabet, shouldPreserveCase);
 
       // Apply case strategy
       if (caseStrategy === 'upper') {
